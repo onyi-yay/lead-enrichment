@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lead Enrichment Service - 5 Free Leads</title>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .header p {
+            font-size: 18px;
+            opacity: 0.95;
+        }
+        
+        .free-badge {
+            display: inline-block;
+            background: #FFD700;
+            color: #333;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 16px;
+            margin: 15px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+        
+        .form-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .pricing-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 25px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .pricing-tier {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .pricing-tier.highlight {
+            border-color: #00C851;
+            box-shadow: 0 4px 12px rgba(0, 200, 81, 0.2);
+        }
+        
+        .tier-name {
+            font-size: 14px;
+            text-transform: uppercase;
+            color: #666;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .tier-price {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+            margin: 10px 0;
+        }
+        
+        .tier-price.free {
+            color: #00C851;
+        }
+        
+        .tier-desc {
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .features {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .features h3 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+        }
+        
+        .price-estimate {
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 25px 0;
+            transition: all 0.3s;
+        }
+        
+        .price-estimate.free {
+            background: linear-gradient(135deg, #00C851 0%, #007E33 100%);
+            color: white;
+        }
+        
+        .price-estimate.paid {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA000 100%);
+            color: #333;
+        }
+        
+        .price-estimate.neutral {
+            background: #f5f5f5;
+            color: #666;
+        }
+        
+        .recaptcha-wrapper {
+            margin: 25px 0;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #00C851 0%, #007E33 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 200, 81, 0.3);
+        }
+        
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 200, 81, 0.4);
+        }
+        
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 10px;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .result.success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        
+        .result.error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .result.loading {
+            background: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid #17a2b8;
+            text-align: center;
+        }
+        
+        .result h3 {
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+        
+        .result p {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0,0,0,0.1);
+            border-radius: 50%;
+            border-top-color: #0c5460;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 32px;
+            }
+            
+            .form-card {
+                padding: 25px;
+            }
+            
+            .pricing-box {
+                grid-template-columns: 1fr;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Lead Enrichment</h1>
+            <p>Get verified contact data instantly</p>
+            <div class="free-badge">✨ First 5 Leads FREE!</div>
+        </div>
+        
+        <div class="form-card">
+            <div class="pricing-box">
+                <div class="pricing-tier highlight">
+                    <div class="tier-name">Free Tier</div>
+                    <div class="tier-price free">₦0</div>
+                    <div class="tier-desc">Up to 5 leads<br>No payment needed</div>
+                </div>
+                <div class="pricing-tier">
+                    <div class="tier-name">Pay-As-You-Go</div>
+                    <div class="tier-price">₦50</div>
+                    <div class="tier-desc">Per lead<br>6+ leads</div>
+                </div>
+            </div>
+            
+            <div class="features">
+                <h3>✅ What You'll Get:</h3>
+                <div class="features-grid">
+                    <div class="feature-item">📧 Email verification</div>
+                    <div class="feature-item">👤 Full name & title</div>
+                    <div class="feature-item">🏢 Company info</div>
+                    <div class="feature-item">📍 Location data</div>
+                    <div class="feature-item">🔗 LinkedIn profiles</div>
+                    <div class="feature-item">📞 Phone numbers</div>
+                </div>
+            </div>
+            
+            <form id="enrichForm">
+                <div class="form-group">
+                    <label for="userName">Your Name *</label>
+                    <input 
+                        type="text" 
+                        id="userName" 
+                        required 
+                        placeholder="John Doe"
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="userEmail">Your Email *</label>
+                    <input 
+                        type="email" 
+                        id="userEmail" 
+                        required 
+                        placeholder="john@company.com"
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="emailList">Email List (one per line) *</label>
+                    <textarea 
+                        id="emailList" 
+                        required 
+                        placeholder="jane@example.com&#10;bob@company.com&#10;alice@startup.io"
+                    ></textarea>
+                </div>
+                
+                <div class="price-estimate neutral" id="priceEstimate">
+                    Enter emails to see pricing
+                </div>
+                
+                <div class="recaptcha-wrapper">
+                    <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
+                </div>
+                
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    Get Started
+                </button>
+            </form>
+            
+            <div id="result"></div>
+        </div>
+    </div>
+
+    <script>
+        const PRICE_PER_LEAD = 50;
+        const FREE_LIMIT = 5;
+        const WEBHOOK_URL = 'YOUR_N8N_WEBHOOK_URL_HERE'; // Replace this!
+        
+        // Update price estimate in real-time
+        document.getElementById('emailList').addEventListener('input', (e) => {
+            const emails = e.target.value.split('\n').filter(email => email.trim().length > 0);
+            const totalLeads = emails.length;
+            const priceEstimate = document.getElementById('priceEstimate');
+            
+            if (totalLeads === 0) {
+                priceEstimate.textContent = 'Enter emails to see pricing';
+                priceEstimate.className = 'price-estimate neutral';
+            } else if (totalLeads <= FREE_LIMIT) {
+                priceEstimate.innerHTML = `🎉 <strong>${totalLeads} lead${totalLeads > 1 ? 's' : ''}</strong> - Completely FREE!`;
+                priceEstimate.className = 'price-estimate free';
+            } else {
+                const totalPrice = totalLeads * PRICE_PER_LEAD;
+                priceEstimate.innerHTML = `
+                    💰 <strong>${totalLeads} leads</strong><br>
+                    <span style="font-size: 14px;">${FREE_LIMIT} free + ${totalLeads - FREE_LIMIT} paid = <strong>₦${totalPrice.toLocaleString()}</strong></span>
+                `;
+                priceEstimate.className = 'price-estimate paid';
+            }
+        });
+        
+        // Handle form submission
+        document.getElementById('enrichForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const resultDiv = document.getElementById('result');
+            
+            // Verify reCAPTCHA
+            const recaptchaResponse = grecaptcha.getResponse();
+            
+            if (!recaptchaResponse) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+                        <h3>⚠️ Verification Required</h3>
+                        <p>Please complete the reCAPTCHA verification</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Get form data
+            const emailList = document.getElementById('emailList').value;
+            const emails = emailList.split('\n').filter(email => email.trim().length > 0);
+            const totalLeads = emails.length;
+            
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            
+            if (totalLeads <= FREE_LIMIT) {
+                submitBtn.textContent = '⏳ Processing free leads...';
+                resultDiv.innerHTML = `
+                    <div class="result loading">
+                        <div class="spinner"></div>
+                        Processing your ${totalLeads} free lead${totalLeads > 1 ? 's' : ''}...
+                    </div>
+                `;
+            } else {
+                submitBtn.textContent = '⏳ Preparing payment...';
+                resultDiv.innerHTML = `
+                    <div class="result loading">
+                        <div class="spinner"></div>
+                        Preparing payment for ${totalLeads} leads...
+                    </div>
+                `;
+            }
+            
+            // Prepare form data
+            const formData = new URLSearchParams();
+            formData.append('userName', document.getElementById('userName').value);
+            formData.append('userEmail', document.getElementById('userEmail').value);
+            formData.append('emailList', emailList);
+            formData.append('g-recaptcha-response', recaptchaResponse);
+            
+            try {
+                const response = await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    if (data.paymentUrl) {
+                        // Paid tier - redirect to payment
+                        resultDiv.innerHTML = `
+                            <div class="result success">
+                                <h3>✅ Payment Required</h3>
+                                <p><strong>${data.totalLeads}</strong> leads will be enriched</p>
+                                <p><strong>Total: ₦${data.amount.toLocaleString()}</strong></p>
+                                <p>Redirecting to secure payment in 3 seconds...</p>
+                            </div>
+                        `;
+                        
+                        setTimeout(() => {
+                            window.location.href = data.paymentUrl;
+                        }, 3000);
+                    } else {
+                        // Free tier - show success
+                        resultDiv.innerHTML = `
+                            <div class="result success">
+                                <h3>🎉 Processing FREE!</h3>
+                                <p><strong>${totalLeads}</strong> lead${totalLeads > 1 ? 's are' : ' is'} being enriched at no cost</p>
+                                <p>Results will be emailed to you within 2-5 minutes</p>
+                                <p>Check your inbox: <strong>${document.getElementById('userEmail').value}</strong></p>
+                            </div>
+                        `;
+                        document.getElementById('enrichForm').reset();
+                        grecaptcha.reset();
+                        document.getElementById('priceEstimate').textContent = 'Enter emails to see pricing';
+                        document.getElementById('priceEstimate').className = 'price-estimate neutral';
+                    }
+                } else {
+                    throw new Error(data.error || 'Unknown error occurred');
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+                        <h3>❌ Error</h3>
+                        <p>${error.message}</p>
+                        <p>Please try again or contact support</p>
+                    </div>
+                `;
+                grecaptcha.reset();
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Get Started';
+            }
+        });
+    </script>
+</body>
+</html>
